@@ -1,0 +1,13 @@
+
+spring:
+  data:
+    mongodb:
+       host: 127.0.0.1
+       port: 27017
+      # username: super
+      # password: base0707
+       auto-index-creation: true
+       database: super_charts
+#      uri: mongodb://root:1234@127.0.0.1:3717/super_charts?authSource=admin&replicaSet=mgset-52906455&authMechanism=SCRAM-SHA-1
+server:
+  port: 8888
