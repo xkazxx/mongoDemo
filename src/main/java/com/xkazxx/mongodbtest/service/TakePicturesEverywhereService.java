@@ -26,7 +26,6 @@ import java.util.Map;
  */
 @Service
 public class TakePicturesEverywhereService {
-  private static final BigDecimal CASE_POINT_RAT = new BigDecimal("0.1");
 
   @Autowired
   private MongoTemplate mongoService;
@@ -89,15 +88,14 @@ public class TakePicturesEverywhereService {
    */
   public ArrayList<UserRank> convertCaseNumToPoint(LinkedHashMap<Long, Integer> target) {
     if (target == null || target.isEmpty()) {
-      return new ArrayList<UserRank>(0);
+      return new ArrayList<>(0);
     }
     ArrayList<UserRank> result = new ArrayList<>(target.size());
     for (Map.Entry<Long, Integer> entry : target.entrySet()) {
       Long key = entry.getKey();
-      double value = CASE_POINT_RAT.multiply(new BigDecimal(entry.getValue())).setScale(2, RoundingMode.HALF_UP).doubleValue();
       UserRank userRank = new UserRank();
       userRank.setId(key);
-      userRank.setPoint(value);
+      userRank.setCount(Long.valueOf(entry.getValue()));
       result.add(userRank);
     }
     return result;
@@ -115,7 +113,7 @@ public class TakePicturesEverywhereService {
     final Criteria criteria = Criteria.where("createdBy").is(userId).and("isDeleted").ne("true").and("status").is(Collections.singletonList("审核通过"));
 //    long caseNum = collection.countDocuments(filter);
     long caseNum = collection.countDocuments(criteria.getCriteriaObject());
-    statVO.setPoint(CASE_POINT_RAT.multiply(new BigDecimal(caseNum)).setScale(2, RoundingMode.HALF_UP).doubleValue());
+    statVO.setPoint(caseNum);
     // 统计个人排名
     // 对createdBy的数量进行分组，并且统计出个数
     Document doc2 = new Document();
@@ -132,7 +130,7 @@ public class TakePicturesEverywhereService {
     Document sort2 = new Document("$sort", new Document("count", 1));
 
     // 将筛选条件添加到文本集合中
-    List<Document> docList = new ArrayList<Document>();
+    List<Document> docList = new ArrayList<>();
     docList.add(match2);
     docList.add(group2);
     docList.add(sort2);
@@ -145,11 +143,9 @@ public class TakePicturesEverywhereService {
       for (Document ignored : aggregate) {
         total++;
       }
-      double gap = CASE_POINT_RAT.multiply(new BigDecimal(first.getInteger("count") - caseNum))
-              .setScale(2, RoundingMode.HALF_UP).doubleValue();
-      statVO.setGap(gap);
+      statVO.setGap(first.getInteger("count") - caseNum);
     } else {
-      statVO.setGap(0);
+      statVO.setGap(0L);
     }
     statVO.setLevel(total);
   }

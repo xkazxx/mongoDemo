@@ -1,5 +1,7 @@
 package com.xkazxx.mongodbtest.vo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -8,39 +10,15 @@ import java.io.Serializable;
  * description: com.big.vo
  * date:2021/9/29
  */
-
+@Data
 public class UserRank implements Serializable {
-  private static final long serialVersionUID = 8679703980211589340L;
-  
+  /**
+   * 用户id
+   */
   private Long id;
-  private Double point;
+  /**
+   * 用户案例数
+   */
+  private Long count;
 
-  public UserRank() {
-  }
-
-
-
-  @Override
-  public String toString() {
-    return "UserRank{" +
-            "id=" + id +
-            ", point=" + point +
-            '}';
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Double getPoint() {
-    return point;
-  }
-
-  public void setPoint(Double point) {
-    this.point = point;
-  }
 }
